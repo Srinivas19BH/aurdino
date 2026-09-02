@@ -1,5 +1,5 @@
 #define STEP_PIN_1 2//motor 1(this is our top motor or like up motor)
-
+//#include "search.h" this i added fro algorithm 
 #define DIR_PIN_1  3
 
 #define STEP_PIN_2 4//motor 2(let this be our front motor facing toward us )
@@ -22,24 +22,49 @@
 
 #define DIR_PIN_6 13
 
-int cube[54];
-int u[9] = {0,0,0,0,0,0,0,0,0};
-int r[9] = {1,1,1,1,1,1,1,1,1};
-int f[9] = {2,2,2,2,2,2,2,2,2};
-int d[9] = {3,3,3,3,3,3,3,3,3};
-int l[9] = {4,4,4,4,4,4,4,4,4};
-int b[9] = {5,5,5,5,5,5,5,5,5};
+char cube[54];
+char u[9] = {'U','U','U','U','U','U','U','U','U'};
+char r[9] = {'R','R','R','R','R','R','R','R','R'};
+char f[9] = {'F','F','F','F','F','F','F','F','F'};
+char d[9] = {'D','D','D','D','D','D','D','D','D'};
+char l[9] = {'L','L','L','L','L','L','L','L','L'};
+char b[9] = {'B','B','B','B','B','B','B','B','B'};
 
 
 
-  void setup()
+void setup()
 {
-    for(int i = 0; i < 54; i++)//0 → U-color
-    {                          //1 → R-color
-      cube[i] = i / 9;         //2 → F-color
-    }                          //3 → D-color
-                                //4 → L-color
-                              //5 → B-color
+  Serial.begin(115200);
+    for(int i = 0; i < 54; i++)
+    {                          
+      if(i<9)
+      {
+        cube[i]='U';
+      
+      }         
+      else if (i<18)
+      {
+        cube[i]='R';
+      }
+      else if (i<27)
+      {
+        cube[i]='F';
+      }
+      else if (i<36)
+      {
+        cube[i]='D';
+      }
+      else if (i<45)
+      {
+        cube[i]='L';
+      }
+      else if (i<54)
+      {
+        cube[i]='B';
+      }
+    }                          
+                              
+                              
     
 
 
@@ -67,6 +92,12 @@ int b[9] = {5,5,5,5,5,5,5,5,5};
   digitalWrite(STEP_PIN_4, LOW);
   digitalWrite(STEP_PIN_5, LOW);
   digitalWrite(STEP_PIN_6, LOW);
+
+  printCube();
+
+  R(1);
+
+  printCube();
 
 }
 
@@ -125,7 +156,7 @@ int random_number()
 {
 
 
-  return random(1, 10);
+  return random(1, 5);
 
 }
 
@@ -134,30 +165,24 @@ int random_number()
 void suffel()
 
 {
+  U(random_number());
+  U_inverse(random_number());
 
-  clockwise((random_number() / 2), DIR_PIN_1, STEP_PIN_1);
+  R(random_number());
+  R_inverse(random_number());
 
-  anticlockwise((random_number() / 2), DIR_PIN_1, STEP_PIN_1);//motor 1
+  F(random_number());
+  F_inverse(random_number());
 
-  clockwise((random_number() / 2), DIR_PIN_2, STEP_PIN_2);
+  D(random_number());
+  D_inverse(random_number());
 
-  anticlockwise((random_number() / 2), DIR_PIN_2, STEP_PIN_2);//motor 2
+  L(random_number());
+  L_inverse(random_number());
 
-  clockwise((random_number() / 2), DIR_PIN_3, STEP_PIN_3);
+  B(random_number());
+  B_inverse(random_number());
 
-  anticlockwise((random_number() / 2), DIR_PIN_3, STEP_PIN_3);//motor 3
-
-  clockwise((random_number() / 2), DIR_PIN_4, STEP_PIN_4);
-
-  anticlockwise((random_number() / 2), DIR_PIN_4, STEP_PIN_4);//motor 4
-
-  clockwise((random_number() / 2), DIR_PIN_5, STEP_PIN_5);
-
-  anticlockwise((random_number() / 2), DIR_PIN_5, STEP_PIN_5);//motor 5
-
-  clockwise((random_number() / 2), DIR_PIN_6, STEP_PIN_6);
-
-  anticlockwise((random_number() / 2), DIR_PIN_6, STEP_PIN_6);//motor 6
 
 }
 //apply right in array
@@ -168,7 +193,7 @@ void apply_right(int rotaion)//this is for changig the matrix
   {
     for(int j=2;j<9;j+=3)//here like from point of view of front 
     {
-      int temp_a=u[j];
+      char temp_a=u[j];
       u[j]=f[j];
       f[j]=d[j];
       d[j] = b[8-j];//the back view is like mirror
@@ -176,7 +201,7 @@ void apply_right(int rotaion)//this is for changig the matrix
       
     }
     i++;
-    int temp[9];
+    char temp[9];
 
     for(int k = 0; k < 9; k++)
     {
@@ -206,7 +231,7 @@ void apply_right_inverse(int rotaion)//this is for changig the matrix
   {
     for(int j=2;j<9;j+=3)//here like from point of view of front 
     {
-      int temp_a= b[8-j];
+      char temp_a= b[8-j];
       u[j]= temp_a;
       b[8-j]= d[j];//the back view is like mirro
       
@@ -216,7 +241,7 @@ void apply_right_inverse(int rotaion)//this is for changig the matrix
       
     }
     i++;
-    int temp[9];
+    char temp[9];
 
     for(int k = 0; k < 9; k++)
     {
@@ -245,7 +270,7 @@ void apply_left(int rotaion)//this is for changig the matrix
   {
     for(int j=0;j<9;j+=3)//here like from point of view of front 
     {
-      int temp_a=u[j];
+      char temp_a=u[j];
       u[j]=f[j];
       f[j]=d[j];
       d[j] = b[8-j];//the back view is like mirror
@@ -253,7 +278,7 @@ void apply_left(int rotaion)//this is for changig the matrix
       
     }
     i++;
-    int temp[9];
+    char temp[9];
 
     for(int k = 0; k < 9; k++)
     {
@@ -283,7 +308,7 @@ void apply_left_inverse(int rotaion)//this is for changig the matrix
   {
     for(int j=0;j<9;j+=3)//here like from point of view of front 
     {
-      int temp_a= b[8-j];
+      char temp_a= b[8-j];
       u[j]= temp_a;
       b[8-j]= d[j];//the back view is like mirro
       
@@ -293,7 +318,7 @@ void apply_left_inverse(int rotaion)//this is for changig the matrix
       
     }
     i++;
-    int temp[9];
+    char temp[9];
 
     for(int k = 0; k < 9; k++)
     {
@@ -322,7 +347,7 @@ void apply_up(int rotaion)//this is for changig the matrix
   {
     for(int j=0;j<3;j++)//here like from point of view of front 
     {
-      int temp_a=f[j];
+      char temp_a=f[j];
       f[j]=r[j];
       r[j]=b[2-j];
       b[2-j] = l[j];//the back view is like mirror
@@ -330,7 +355,7 @@ void apply_up(int rotaion)//this is for changig the matrix
       
     }
     i++;
-    int temp[9];
+    char temp[9];
 
     for(int k = 0; k < 9; k++)
     {
@@ -360,7 +385,7 @@ void apply_up_inverse(int rotaion)//this is for changig the matrix
   {
     for(int j=0;j<3;j++)//here like from point of view of front 
     {
-      int temp_a= f[j];
+      char temp_a= f[j];
       f[j]=l[j];
       l[j]= b[2-j];//the back view is like mirro
       
@@ -370,7 +395,7 @@ void apply_up_inverse(int rotaion)//this is for changig the matrix
       
     }
     i++;
-    int temp[9];
+    char temp[9];
 
     for(int k = 0; k < 9; k++)
     {
@@ -398,7 +423,7 @@ void apply_down(int rotaion)//this is for changig the matrix
   {
    for(int j = 6; j < 9; j++)
     {
-      int temp_a = f[j];
+      char temp_a = f[j];
 
       f[j] = r[j];
       r[j] = b[14-j];
@@ -408,7 +433,7 @@ void apply_down(int rotaion)//this is for changig the matrix
     i++;
   
     
-    int temp[9];
+    char temp[9];
 
     for(int k = 0; k < 9; k++)
     {
@@ -438,7 +463,7 @@ void apply_down_inverse(int rotaion)//this is for changig the matrix
   {
     for(int j=6;j<9;j++)//here like from point of view of front 
     {
-      int temp_a= f[j];
+      char temp_a= f[j];
       f[j]=r[j];
       r[j]= b[14-j];//the back view is like mirro
       
@@ -448,7 +473,7 @@ void apply_down_inverse(int rotaion)//this is for changig the matrix
       
     }
     i++;
-    int temp[9];
+    char temp[9];
 
     for(int k = 0; k < 9; k++)
     {
@@ -476,7 +501,7 @@ void apply_front(int rotation)
     {
         // U bottom -> R left -> D top -> L right -> U bottom
 
-        int temp_u[3];
+        char temp_u[3];
 
         temp_u[0] = u[6];
         temp_u[1] = u[7];
@@ -501,7 +526,7 @@ void apply_front(int rotation)
 
         // Rotate F face clockwise
 
-        int temp[9];
+        char temp[9];
 
         for(int k = 0; k < 9; k++)
         {
@@ -533,7 +558,7 @@ void apply_front_inverse(int rotation)
     {
         // U bottom -> L right -> D top -> R left -> U bottom
 
-        int temp_u[3];
+        char temp_u[3];
 
         temp_u[0] = u[6];
         temp_u[1] = u[7];
@@ -558,7 +583,7 @@ void apply_front_inverse(int rotation)
 
         // Rotate F face anticlockwise
 
-        int temp[9];
+        char temp[9];
 
         for(int k = 0; k < 9; k++)
         {
@@ -590,7 +615,7 @@ void apply_back(int rotation)
     {
         // U top -> L left -> D bottom -> R right -> U top
 
-        int temp_u[3];
+        char temp_u[3];
 
         temp_u[0] = u[0];
         temp_u[1] = u[1];
@@ -617,7 +642,7 @@ void apply_back(int rotation)
         // With your front-reference/mirrored B indexing,
         // clockwise appears as anticlockwise in the array.
 
-        int temp[9];
+        char temp[9];
 
         for(int k = 0; k < 9; k++)
         {
@@ -649,7 +674,7 @@ void apply_back_inverse(int rotation)
     {
         // U top -> R right -> D bottom -> L left -> U top
 
-        int temp_u[3];
+        char temp_u[3];
 
         temp_u[0] = u[0];
         temp_u[1] = u[1];
@@ -676,7 +701,7 @@ void apply_back_inverse(int rotation)
         // Because your B array is mirrored, this appears clockwise
         // in the front-reference array.
 
-        int temp[9];
+        char temp[9];
 
         for(int k = 0; k < 9; k++)
         {
@@ -800,15 +825,152 @@ void D(int rotation)
 }
 
 void D_inverse(int rotation)
-
 {
-
-  anticlockwise(rotation, DIR_PIN_6, STEP_PIN_6);//D'_no.
+  anticlockwise(rotation, DIR_PIN_6, STEP_PIN_6);
   apply_down_inverse(rotation);
+}
+void printCube()
+{
+    Serial.println("U:");
+    for(int i = 0; i < 9; i++)
+        Serial.print(u[i]);
+    Serial.println();
+
+    Serial.println("R:");
+    for(int i = 0; i < 9; i++)
+        Serial.print(r[i]);
+    Serial.println();
+
+    Serial.println("F:");
+    for(int i = 0; i < 9; i++)
+        Serial.print(f[i]);
+    Serial.println();
+
+    Serial.println("D:");
+    for(int i = 0; i < 9; i++)
+        Serial.print(d[i]);
+    Serial.println();
+
+    Serial.println("L:");
+    for(int i = 0; i < 9; i++)
+        Serial.print(l[i]);
+    Serial.println();
+
+    Serial.println("B:");
+    for(int i = 0; i < 9; i++)
+        Serial.print(b[i]);
+    Serial.println();
 }
 
 
+void updateCube()
+{
+    for(int i = 0; i < 9; i++)
+    {
+        cube[i]      = u[i];
+        cube[i + 9]  = r[i];
+        cube[i + 18] = f[i];
+        cube[i + 27] = d[i];
+        cube[i + 36] = l[i];
+        cube[i + 45] = b[i];
+    }
+}
 
-void loop() {
+/* this is for again algorithm 
+String cubeToKociemba()
+{
+    updateCube();
+
+    String state = "";
+
+    for(int i = 0; i < 54; i++)
+    {
+        state += cube[i];
+    }
+
+    return state;
+}
+
+
+void solveCube()
+{
+    String state = cubeToKociemba();
+
+    char facelets[55];
+
+    state.toCharArray(facelets, 55);
+
+    char *sol = solution(
+        facelets,
+        24,
+        1000,
+        0,
+        "cache"
+    );
+
+    if(sol == NULL)
+    {
+        Serial.println("Kociemba could not find a solution!");
+        return;
+    }
+
+    Serial.print("Kociemba solution: ");
+    Serial.println(sol);
+
+    executeSolution(String(sol));
+
+    free(sol);
+}
+
+
+void executeMove(char face, int amount)
+{
+    if(face == 'U') U(amount);
+    else if(face == 'R') R(amount);
+    else if(face == 'F') F(amount);
+    else if(face == 'D') D(amount);
+    else if(face == 'L') L(amount);
+    else if(face == 'B') B(amount);
+}
+
+
+void executeSolution(String solution)
+{
+    int i = 0;
+
+    while(i < solution.length())
+    {
+        if(solution[i] == ' ')
+        {
+            i++;
+            continue;
+        }
+
+        char face = solution[i];
+        int amount = 1;
+
+        if(i + 1 < solution.length())
+        {
+            if(solution[i + 1] == '2')
+            {
+                amount = 2;
+                i++;
+            }
+            else if(solution[i + 1] == '\'')
+            {
+                amount = 3;
+                i++;
+            }
+        }
+
+        executeMove(face, amount);
+
+        i++;
+    }
+}
+
+*/
+void loop()
+{
 
 }
